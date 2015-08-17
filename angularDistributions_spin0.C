@@ -3,7 +3,6 @@
 #endif
 #include <iostream>
 #include <cmath>
-#include <string>
 #include <algorithm>
 #include "RooRealVar.h"
 #include "RooDataSet.h"
@@ -19,6 +18,7 @@
 #include "TH1.h"
 #include "TGaxis.h"
 #include "TString.h"
+#include "TSystem.h"
 #include "TChain.h"
 #include "ScalarPdfFactory_withFepspr.cc"
 #include "AngularPdfFactory.cc"
@@ -28,15 +28,16 @@ using namespace RooFit;
 
 using namespace std;
 
-void angularDistributions_spin0(TString INPUT_NAME, int nbins=80){
-  RooRealVar* mzz = new RooRealVar("ZZMass", "M_{ZZ} (GeV)", 400, 100, 1000);
-  RooRealVar* z1mass = new RooRealVar("Z1Mass", "m_{Z1} (GeV)", 4, 120);
-  RooRealVar* z2mass = new RooRealVar("Z2Mass", "m_{Z2} (GeV)", 4, 120);
-  RooRealVar* hs = new RooRealVar("costhetastar", "cos#theta^{*}", -1, 1);
-  RooRealVar* h1 = new RooRealVar("costheta1", "cos#theta_{Z1}", -1, 1);
-  RooRealVar* h2 = new RooRealVar("costheta2", "cos#theta_{Z2}", -1, 1);
-  RooRealVar* Phi = new RooRealVar("Phi", "#Phi", -TMath::Pi(), TMath::Pi());
-  RooRealVar* Phi1 = new RooRealVar("Phi1", "#Phi_{Z1}", -TMath::Pi(), TMath::Pi());
+void angularDistributions_spin0(int nfiles, TString *files, TString plotdir, int nbins=80){
+  gSystem->mkdir(plotdir);
+  RooRealVar* mzz = new RooRealVar("mH", "M_{ZZ} (GeV)", 400, 100, 1000);
+  RooRealVar* z1mass = new RooRealVar("mZ1", "m_{Z1} (GeV)", 4, 120);
+  RooRealVar* z2mass = new RooRealVar("mZ2", "m_{Z2} (GeV)", 4, 120);
+  RooRealVar* hs = new RooRealVar("costhetastar_ZZ4l", "cos#theta^{*}_{ZZ4l}", -1, 1);
+  RooRealVar* h1 = new RooRealVar("costheta1_ZZ4l", "cos#(theta_{1})_{ZZ4l}", -1, 1);
+  RooRealVar* h2 = new RooRealVar("costheta2_ZZ4l", "cos#(theta_{Z2})_{ZZ4l}", -1, 1);
+  RooRealVar* Phi = new RooRealVar("Phi_ZZ4l", "#Phi_{ZZ4l}", -TMath::Pi(), TMath::Pi());
+  RooRealVar* Phi1 = new RooRealVar("Phi1_ZZ4l", "#(Phi_{1})_{ZZ4l}", -TMath::Pi(), TMath::Pi());
 
   RooRealVar* measurables[8]={ z1mass, z2mass, h1, h2, hs, Phi, Phi1, mzz };
 
@@ -50,15 +51,11 @@ void angularDistributions_spin0(TString INPUT_NAME, int nbins=80){
   someHiggs->_modelParams.g4ValIm->setVal(0);
   someHiggs->makeParamsConst(true);
 
-  string cinput_common = "./";
-  string coutput_common = "./Plots/";
-  string cinput = cinput_common + INPUT_NAME.Data();
-  cinput = cinput + ".root";
-
-  TChain* tree = new TChain("SelectedTree");
-  tree->Add(cinput.c_str());
+  TChain* tree = new TChain("tree");
+  for (int i = 0; i < nfiles; i++)
+    tree->Add(files[i]);
   RooDataSet* dataSM = new RooDataSet("data", "data", tree, RooArgSet(*z1mass, *z2mass, *hs, *h1, *h2, *Phi, *Phi1));
-  for (int plotIndex=3/*0*/; plotIndex<7; plotIndex++){
+  for (int plotIndex=0; plotIndex<7; plotIndex++){
     cout << plotIndex << endl;
 
     RooPlot* plot = measurables[plotIndex]->frame(nbins);
@@ -69,7 +66,7 @@ void angularDistributions_spin0(TString INPUT_NAME, int nbins=80){
     plot->GetXaxis()->SetNdivisions(-505);
 
     char ctitle[200]="";
-    string m_name = measurables[plotIndex]->GetName();
+    TString m_name = measurables[plotIndex]->GetName();
     cout << ctitle << endl;
 
     plot->SetTitle(ctitle);
@@ -83,18 +80,17 @@ void angularDistributions_spin0(TString INPUT_NAME, int nbins=80){
 
     plot->Draw();
 
-    char cname[200];
-    sprintf(cname, "%s_%s", INPUT_NAME.Data(), m_name.c_str());
-    string cname_pdf=cname;
-    string cname_eps=cname;
-    string cname_png=cname;
-    cname_pdf = (coutput_common + cname_pdf) + ".pdf";
-    cname_eps = (coutput_common + cname_eps) + ".eps";
-    cname_png = (coutput_common + cname_png) + ".png";
+    TString cname = m_name;
+    TString cname_pdf=cname;
+    TString cname_eps=cname;
+    TString cname_png=cname;
+    cname_pdf = TString(plotdir) += TString("/") += TString(m_name) += ".pdf";
+    cname_eps = TString(plotdir) += TString("/") += TString(m_name) += ".eps";
+    cname_png = TString(plotdir) += TString("/") += TString(m_name) += ".png";
 
-    can->SaveAs(cname_pdf.c_str());
-    can->SaveAs(cname_eps.c_str());
-    can->SaveAs(cname_png.c_str());
+    can->SaveAs(cname_pdf);
+    can->SaveAs(cname_eps);
+    can->SaveAs(cname_png);
     can->Close();
   }
 
