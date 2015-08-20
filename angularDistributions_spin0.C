@@ -34,10 +34,10 @@ void angularDistributions_spin0(int nfiles, TString *files, TString plotdir, int
   RooRealVar* z1mass = new RooRealVar("mZ1", "m_{Z1} (GeV)", 4, 120);
   RooRealVar* z2mass = new RooRealVar("mZ2", "m_{Z2} (GeV)", 4, 120);
   RooRealVar* hs = new RooRealVar("costhetastar_ZZ4l", "cos#theta^{*}_{ZZ4l}", -1, 1);
-  RooRealVar* h1 = new RooRealVar("costheta1_ZZ4l", "cos#(theta_{1})_{ZZ4l}", -1, 1);
-  RooRealVar* h2 = new RooRealVar("costheta2_ZZ4l", "cos#(theta_{Z2})_{ZZ4l}", -1, 1);
+  RooRealVar* h1 = new RooRealVar("costheta1_ZZ4l", "cos(#theta_{1})_{ZZ4l}", -1, 1);
+  RooRealVar* h2 = new RooRealVar("costheta2_ZZ4l", "cos(#theta_{Z2})_{ZZ4l}", -1, 1);
   RooRealVar* Phi = new RooRealVar("Phi_ZZ4l", "#Phi_{ZZ4l}", -TMath::Pi(), TMath::Pi());
-  RooRealVar* Phi1 = new RooRealVar("Phi1_ZZ4l", "#(Phi_{1})_{ZZ4l}", -TMath::Pi(), TMath::Pi());
+  RooRealVar* Phi1 = new RooRealVar("Phi1_ZZ4l", "(#Phi_{1})_{ZZ4l}", -TMath::Pi(), TMath::Pi());
 
   RooRealVar* measurables[8]={ z1mass, z2mass, h1, h2, hs, Phi, Phi1, mzz };
 
