@@ -29,7 +29,7 @@ using namespace RooFit;
 using namespace std;
 
 void angularDistributions_spin0(TString INPUT_NAME, int nbins=80){
-  RooRealVar* mzz = new RooRealVar("ZZMass", "M_{ZZ} (GeV)", 400, 100, 1000);
+  RooRealVar* mzz = new RooRealVar("ZZMass", "M_{ZZ} (GeV)", 125, 100, 1000);
   RooRealVar* z1mass = new RooRealVar("Z1Mass", "m_{Z1} (GeV)", 4, 120);
   RooRealVar* z2mass = new RooRealVar("Z2Mass", "m_{Z2} (GeV)", 4, 120);
   RooRealVar* hs = new RooRealVar("costhetastar", "cos#theta^{*}", -1, 1);
