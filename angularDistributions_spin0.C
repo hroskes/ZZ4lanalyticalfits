@@ -28,9 +28,9 @@ using namespace RooFit;
 
 using namespace std;
 
-void angularDistributions_spin0(int nfiles, TString *files, TString plotdir, int nbins=80){
+void angularDistributions_spin0(int nfiles, TString *files, TString plotdir, double g1, double Re_g4, double Im_g4, int nbins=80){
   gSystem->mkdir(plotdir);
-  RooRealVar* mzz = new RooRealVar("mH", "M_{ZZ} (GeV)", 400, 100, 1000);
+  RooRealVar* mzz = new RooRealVar("mH", "M_{ZZ} (GeV)", 125, 100, 1000);
   RooRealVar* z1mass = new RooRealVar("mZ1", "m_{Z1} (GeV)", 4, 120);
   RooRealVar* z2mass = new RooRealVar("mZ2", "m_{Z2} (GeV)", 4, 120);
   RooRealVar* hs = new RooRealVar("costhetastar_ZZ4l", "cos#theta^{*}_{ZZ4l}", -1, 1);
@@ -43,12 +43,12 @@ void angularDistributions_spin0(int nfiles, TString *files, TString plotdir, int
 
   ScalarPdfFactory_withFepspr* someHiggs = new ScalarPdfFactory_withFepspr(z1mass, z2mass, hs, h1, h2, Phi, Phi1, mzz, 1, false, true);
   someHiggs->_modelParams.fepspr->setVal(0);
-  someHiggs->_modelParams.g1Val->setVal(1);
+  someHiggs->_modelParams.g1Val->setVal(g1);
   someHiggs->_modelParams.g2Val->setVal(0);
   someHiggs->_modelParams.g3Val->setVal(0);
-  someHiggs->_modelParams.g4Val->setVal(0);
+  someHiggs->_modelParams.g4Val->setVal(Re_g4);
   someHiggs->_modelParams.g2ValIm->setVal(0);
-  someHiggs->_modelParams.g4ValIm->setVal(0);
+  someHiggs->_modelParams.g4ValIm->setVal(Im_g4);
   someHiggs->makeParamsConst(true);
 
   TChain* tree = new TChain("tree");

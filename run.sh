@@ -11,6 +11,10 @@ for a in $(ls .. | grep "^VBF\|^HJJ"); do
 
     filename=${a/./}
 
+    g1=$(grep "ghz1 = " ../$a/JHUGen/JHUGenerator/mod_Parameters.F90 | sed "s/.*(//" | sed "s/,.*//" | sed "s/d/e/")
+    Re_g4=$(grep "ghz4 = " ../$a/JHUGen/JHUGenerator/mod_Parameters.F90 | sed "s/.*(//" | sed "s/,.*//" | sed "s/d/e/")
+    Im_g4=$(grep "ghz4 = " ../$a/JHUGen/JHUGenerator/mod_Parameters.F90 | sed "s/.*,//" | sed "s/).*//" | sed "s/d/e/")
+
     echo -n '
 #include "TROOT.h"
 #include "TString.h"
@@ -34,8 +38,8 @@ for a in $(ls .. | grep "^VBF\|^HJJ"); do
     echo '
     };
 
-    angularDistributions_spin0(nfiles, files, "'$a'");
-}' >> $filename.C
+    angularDistributions_spin0(nfiles, files, "'$a'"'", $g1, $Re_g4, $Im_g4);
+}" >> $filename.C
 
 
     #if ( echo $a | grep -q "\." ); then
