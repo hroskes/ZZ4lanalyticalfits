@@ -30,14 +30,15 @@ using namespace std;
 
 void angularDistributions_spin0(int nfiles, TString *files, TString plotdir, double g1, double Re_g4, double Im_g4, int nbins=80){
   gSystem->mkdir(plotdir);
-  RooRealVar* mzz = new RooRealVar("mH", "M_{ZZ} (GeV)", 125, 100, 1000);
-  RooRealVar* z1mass = new RooRealVar("mZ1", "m_{Z1} (GeV)", 4, 120);
-  RooRealVar* z2mass = new RooRealVar("mZ2", "m_{Z2} (GeV)", 4, 120);
-  RooRealVar* hs = new RooRealVar("costhetastar_ZZ4l", "cos#theta^{*}_{ZZ4l}", -1, 1);
-  RooRealVar* h1 = new RooRealVar("costheta1_ZZ4l", "cos(#theta_{1})_{ZZ4l}", -1, 1);
-  RooRealVar* h2 = new RooRealVar("costheta2_ZZ4l", "cos(#theta_{Z2})_{ZZ4l}", -1, 1);
-  RooRealVar* Phi = new RooRealVar("Phi_ZZ4l", "#Phi_{ZZ4l}", -TMath::Pi(), TMath::Pi());
-  RooRealVar* Phi1 = new RooRealVar("Phi1_ZZ4l", "(#Phi_{1})_{ZZ4l}", -TMath::Pi(), TMath::Pi());
+
+  RooRealVar* mzz = new RooRealVar("GenHMass", "M_{ZZ} (GeV)", 125, 100, 1000);
+  RooRealVar* z1mass = new RooRealVar("GenZ1Mass", "m_{Z1} (GeV)", 4, 120);
+  RooRealVar* z2mass = new RooRealVar("Z2Mass", "m_{Z2} (GeV)", 4, 120);
+  RooRealVar* hs = new RooRealVar("Gencosthetastar", "cos#theta^{*}_{ZZ4l}", -1, 1);
+  RooRealVar* h1 = new RooRealVar("GenhelcosthetaZ1", "cos(#theta_{1})_{ZZ4l}", -1, 1);
+  RooRealVar* h2 = new RooRealVar("GenhelcosthetaZ2", "cos(#theta_{Z2})_{ZZ4l}", -1, 1);
+  RooRealVar* Phi = new RooRealVar("Genhelphi", "#Phi_{ZZ4l}", -TMath::Pi(), TMath::Pi());
+  RooRealVar* Phi1 = new RooRealVar("GenphistarZ1", "(#Phi_{1})_{ZZ4l}", -TMath::Pi(), TMath::Pi());
 
   RooRealVar* measurables[8]={ z1mass, z2mass, h1, h2, hs, Phi, Phi1, mzz };
 
@@ -51,7 +52,7 @@ void angularDistributions_spin0(int nfiles, TString *files, TString plotdir, dou
   someHiggs->_modelParams.g4ValIm->setVal(Im_g4);
   someHiggs->makeParamsConst(true);
 
-  TChain* tree = new TChain("tree");
+  TChain* tree = new TChain("SelectedTree");
   for (int i = 0; i < nfiles; i++)
     tree->Add(files[i]);
   RooDataSet* dataSM = new RooDataSet("data", "data", tree, RooArgSet(*z1mass, *z2mass, *hs, *h1, *h2, *Phi, *Phi1));

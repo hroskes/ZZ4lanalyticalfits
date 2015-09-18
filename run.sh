@@ -45,7 +45,7 @@ for a in $(ls .. | grep "^VBF\|^HJJ"); do
 }" >> $filename.C
 
 
-    if ( echo $a | grep -q "HJJ" ); then
+    if ( echo $a | grep -q "" ); then
         echo "
             cd /afs/cern.ch/work/h/hroskes/public/Run2MC/CMSSW_7_4_1 && eval "'$(scram ru -sh)'" && cd /afs/cern.ch/user/h/hroskes/work/public/Run2MC/ZZ4lanalyticalfits &&
             echo '
